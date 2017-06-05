@@ -1,28 +1,28 @@
 node("linux && jdk8") {
     stage "Checkout"
-    git url: "https://github.com/instil/jenkins-pipeline-dsl-plugin"
+    git url: "https://github.com/roamingthings/workbench-cicd.git"
 
-    stage "Build/Analyse/Test"
-    sh "./gradlew clean build"
-    archiveUnitTestResults()
-    archiveCheckstyleResults()
+    dir('workbench-cicd-server') {
+        stage "Build/Analyse/Test"
+        sh "./gradlew clean build"
+        archiveUnitTestResults()
 
-    stage "Generate AMI"
-    sh "./gradlew boxfuseFuse"
+        stage "Integration Test"
+        sh "./gradlew integrationtest"
+    }
 
-    stage name: "Deploy to AWS", concurrency: 1
-    sh "./gradlew boxfuseRun"
+/*
+    dir('workbench-cicd-st') {
+        stage "System Tests"
+        sh "./gradlew clean build"
+        archiveUnitTestResults()
+
+        sh "./gradlew integrationtest"
+    }
+*/
+
 }
 
 def archiveUnitTestResults() {
     step([$class: "JUnitResultArchiver", testResults: "build/**/TEST-*.xml"])
-}
-
-def archiveCheckstyleResults() {
-    step([$class: "CheckStylePublisher",
-          canComputeNew: false,
-          defaultEncoding: "",
-          healthy: "",
-          pattern: "build/reports/checkstyle/main.xml",
-          unHealthy: ""])
 }
