@@ -1,19 +1,10 @@
-node('java8') {
-
-    stage('Configure') {
-        env.PATH = "${tool 'gradle-3.5'}/bin:${env.PATH}"
+pipeline {
+    agent { docker 'maven:3.3.3' }
+    stages {
+        stage('build') {
+            steps {
+                sh 'mvn --version'
+            }
+        }
     }
-
-    stage('Checkout') {
-        git 'https://github.com/roamingthings/workbench-cicd.git'
-    }
-
-    stage('Build') {
-        sh 'gradle clean build'
-    }
-
-    stage('Archive') {
-        junit allowEmptyResults: true, testResults: '**/target/**/TEST*.xml'
-    }
-
 }
