@@ -15,4 +15,12 @@ public class PingControllerTest {
         assertThat(pingResponse.getBody(), is("pong"));
     }
 
+    @Test
+    public void should_return_greeting() throws Exception {
+        PingController pingController = new PingController();
+
+        ResponseEntity pingResponse = pingController.greeting("world!");
+        assertThat(pingResponse.getBody(), is("Hello world!"));
+    }
+
 }
