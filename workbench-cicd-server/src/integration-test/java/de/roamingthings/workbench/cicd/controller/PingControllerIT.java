@@ -42,7 +42,20 @@ public class PingControllerIT {
             .and()
                 .body(is("pong"));
         // @formatter:on
+    }
 
+    @Test
+    public void should_response_hello_world() {
+        // @formatter:off
+        given().log().all()
+            .when()
+                .body("World!")
+                .post(baseURI + "/greeting").prettyPeek()
+            .then()
+                .statusCode(200)
+            .and()
+                .body(is("Hello World!"));
+        // @formatter:on
     }
 
 }
